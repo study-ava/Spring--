@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+
+       xsi:schemaLocation=
+               "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--加载外部properties文件-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+
+
+    <bean id="datasource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+
+        <property name="driverClass" value="${jdbc.Driver}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+
+    </bean>
+
+
+<!--  一、  scope:对象的取值范围
+ 默认值： singleton——————单例的   创建容器时会被使用
+        prototype———————多例的   运行getbean时会被使用
+scope="prototype"
+ -->
+<!--  二、
+     init-method="   "   初始方法设置
+     destroy-method="   "   销毁方法设置
+-->
+
+<!--   分层模块
+<import resource="applicationContext-user.xml" />   -->
+
+<!--  <bean id="userDao" class="com.itheima.Dao.impl.UserDaoImpl" init-method="init" destroy-method="destroy"> </bean>  -->
+
+<!-- <bean id="userDao" class="com.itheima.factory.StaticFactory" factory-method="getUserDao"> </bean>  -->
+
+ <!--   <bean id="factory" class="com.itheima.factory.DynamicFactory"> </bean>
+    <bean id="userDao" factory-bean="factory" factory-method="getUserDao" />-->
+
+<!--    <bean id="userDao" class="com.itheima.Dao.impl.UserDaoImpl">-->
+<!--           <property name="username" value="zhangsan"> </property>-->
+<!--        <property name="age" value="18"> </property>-->
+<!--    </bean>-->
+
+
+
+    <bean id="userDao" class="com.itheima.Dao.impl.UserDaoImpl">
+        <property name="strList">
+        <list>
+            <value>aaa</value>
+            <value>111</value>
+            <value>222</value>
+        </list>
+        </property>
+        <property name="userMap" >
+        <map>
+            <entry key="1" value-ref="user1" > </entry>
+            <entry key="2" value-ref="user2" > </entry>
+        </map>
+        </property>
+        <property name="properties" >
+        <props>
+            <prop key="1">aaa</prop>
+            <prop key="2">bbb</prop>
+        </props>
+        </property>
+
+    </bean>
+
+
+    <bean id="user1" class="com.itheima.domain.User">
+        <property name="name" value="123"> </property>
+        <property name="address" value="流星1园"> </property>
+     </bean>
+    <bean id="user2" class="com.itheima.domain.User">
+        <property name="name" value="321"> </property>
+        <property name="address" value="流星2园"> </property>
+    </bean>
+
+
+
+<!--
+    <bean id="userService" class="com.itheima.service.impl.UserServiceImpl">
+        <property name="userDao" ref="userDao"> </property>
+    </bean>
+-->
+<!--    <bean id="userService" class="com.itheima.service.impl.UserServiceImpl" p:userDao-ref="userDao"/>-->
+
+    <bean id="userService" class="com.itheima.service.impl.UserServiceImpl">
+            <constructor-arg name="userDao" ref="userDao"> </constructor-arg>
+    </bean>
+
+
+
+
+
+
+
+</beans>
